@@ -42,14 +42,19 @@
             "suspicious": {
                 "noConsole": "off",
                 "noConsoleLog": "off"
+            },
+            "nursery": {
+                "useConsistentMemberAccessibility": "off"
             }
         }
     },
     "javascript": {
         "formatter": {
             "quoteStyle": "double",
-            "indentWidth": 4
-        }
+            "indentWidth": 4,
+            "lineWidth": 120
+        },
+        "globals": ["Bun"]
     },
     "json": {
         "formatter": {

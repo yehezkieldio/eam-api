@@ -22,13 +22,11 @@
         "noUnusedParameters": false,
         "noPropertyAccessFromIndexSignature": false,
 
-        "isolatedModules": true,
-
         "paths": {
             "#/*": ["./src/*"]
         }
     },
-    "include": ["**/*.ts"],
+    "include": ["./env.d.ts", "**/*.ts", "./test/**/*.ts"],
     "exclude": ["node_modules"],
     "watchOptions": {
         "watchFile": "useFsEvents",

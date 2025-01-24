@@ -11,10 +11,6 @@
         "source.organizeImports.biome": "explicit"
     },
 
-    "files.exclude": {
-        "**/node_modules": true
-    },
-
     "[typescript]": {
         "editor.defaultFormatter": "biomejs.biome"
     },
@@ -29,5 +25,8 @@
     },
     "[typescriptreact]": {
         "editor.defaultFormatter": "biomejs.biome"
+    },
+    "[prisma]": {
+        "editor.defaultFormatter": "Prisma.prisma"
     }
 }
