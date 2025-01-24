@@ -57,12 +57,6 @@ ENV DESCRIPTION="API for managing enterprise assets."
 ENV GIT_COMMIT_HASH=""
 ENV BUILD_TIMESTAMP=""
 
-RUN git rev-parse --short=10 HEAD > /tmp/commit_hash && \
-    echo $(date -u +'%Y-%m-%dT%H:%M:%SZ') > /tmp/build_date && \
-    export GIT_COMMIT_HASH=$(cat /tmp/commit_hash) && \
-    export BUILD_TIMESTAMP=$(cat /tmp/build_date) && \
-    rm /tmp/commit_hash /tmp/build_date
-
 USER appuser
 
 EXPOSE ${PORT}
