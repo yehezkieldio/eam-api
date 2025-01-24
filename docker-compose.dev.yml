@@ -1,6 +1,6 @@
 services:
   postgres:
-    container_name: eam-db-dev
+    container_name: eam-db-development
     image: postgres:latest
     network_mode: "host"
     environment:

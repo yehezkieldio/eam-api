@@ -40,6 +40,10 @@ async function getPackageVersion(): Promise<string> {
  * console.log(hash); // "a1b2c3d4e5"
  */
 async function getGitHash(): Promise<string> {
+    if (Bun.env.GIT_COMMIT_HASH) {
+        return Bun.env.GIT_COMMIT_HASH;
+    }
+
     try {
         const hash: string = await $`git rev-parse --short=10 HEAD`.text();
 

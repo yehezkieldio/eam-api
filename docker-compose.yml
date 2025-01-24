@@ -1,0 +1,43 @@
+services:
+  postgres:
+    container_name: eam-db-production
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: elizielx
+      POSTGRES_PASSWORD: elizielx
+      POSTGRES_DB: eam
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - eam-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U elizielx"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  api:
+    container_name: eam-api-production
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - eam-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    name: eam-postgres-data
+
+networks:
+  eam-network:
+    name: eam-network
+    driver: bridge
