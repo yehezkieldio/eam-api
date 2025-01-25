@@ -1,0 +1,30 @@
+stages:
+  - build
+
+variables:
+  REGISTRY: $CI_REGISTRY
+  IMAGE_NAME: $CI_REGISTRY_IMAGE
+
+build-and-push-image:
+  stage: build
+  image: docker:latest
+  services:
+    - docker:dind
+  before_script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - |
+      docker build \
+        --build-arg GIT_COMMIT=$(echo $CI_COMMIT_SHORT_SHA) \
+        --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
+        -f ./docker/Dockerfile \
+        -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG \
+        -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA \
+        .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+
+  only:
+    refs:
+      - tags
+      - triggers
