@@ -6,7 +6,6 @@
     "scripts": {
         "start": "bun run .",
         "start:dev": "bun run --hot .",
-        "start:docker-test": "docker run --name eam-api --network host -e PORT=3000 -p 3000:3000 eam-api",
         "db:generate": "bunx prisma generate",
         "db:push": "bunx prisma db push",
         "db:migrate:deploy": "bunx prisma migrate deploy",
@@ -26,6 +25,7 @@
         "compose:prod:redeploy": "docker compose -f docker-compose.yml --profile production up -d --no-deps --force-recreate api",
         "compose:prod:deploy": "docker compose -f docker-compose.yml --profile production exec api bun run db:migrate:deploy",
         "docker:build": "docker build --build-arg GIT_COMMIT=$(git rev-parse --short=8 HEAD) --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') -t eam-api:latest .",
+        "docker:run": "docker run --name eam-api --network host -e PORT=3000 -p 3000:3000 eam-api",
         "biome": "biome check .",
         "biome:fix": "biome check . --write"
     },
