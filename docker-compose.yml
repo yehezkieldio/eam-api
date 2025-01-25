@@ -54,7 +54,8 @@ services:
   api:
     container_name: eam-api-production
     profiles: [production]
-    image: registry.gitlab.com/your-project/eam-api:latest
+    image: ghcr.io/yehezkieldio/eam-api:latest
+    # image: registry.gitlab.com/yehezkieldio/eam-api:latest
     env_file:
       - .env
     ports:
