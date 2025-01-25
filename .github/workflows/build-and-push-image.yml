@@ -46,8 +46,8 @@ jobs:
           file: ./Dockerfile
           # tags: ${{ steps.meta.outputs.tags }}
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.sha.outputs.short }}
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.tags }}
+            ${{ steps.sha.outputs.short }}
+            ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             GIT_COMMIT=${{ steps.sha.outputs.short }}
