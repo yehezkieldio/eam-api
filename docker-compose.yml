@@ -39,7 +39,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        - GIT_COMMIT=$(git rev-parse --short=10 HEAD)
+        - GIT_COMMIT=$(git rev-parse --short=8 HEAD)
         - BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
     image: eam-api-local:latest
     env_file:

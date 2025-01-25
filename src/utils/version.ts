@@ -45,7 +45,7 @@ async function getGitHash(): Promise<string> {
     }
 
     try {
-        const hash: string = await $`git rev-parse --short=10 HEAD`.text();
+        const hash: string = await $`git rev-parse --short=8 HEAD`.text();
 
         return hash.toString().trim();
     } catch (error) {
