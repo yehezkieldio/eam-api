@@ -23,7 +23,6 @@ build-and-push-image:
         .
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
     - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
-
   only:
     refs:
       - tags
