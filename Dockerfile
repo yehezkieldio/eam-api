@@ -41,14 +41,16 @@ RUN bun test
 # ---------------------------------------------------------------------------- #
 
 FROM base AS release
+
+ARG GIT_COMMIT
+ARG BUILD_DATE
+
 COPY --from=install /temp/prod/node_modules node_modules
+COPY --from=install /temp/prod/prisma prisma
 COPY --from=install /temp/dev/node_modules/.prisma node_modules/.prisma
 COPY --from=prerelease /usr/src/app/package.json .
 COPY --from=prerelease /usr/src/app/tsconfig.json .
 COPY --from=prerelease /usr/src/app/src src
-
-ARG GIT_COMMIT
-ARG BUILD_DATE
 
 # Define default environment variables
 ENV PORT=3000
