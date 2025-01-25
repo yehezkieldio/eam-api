@@ -1,7 +1,7 @@
 import {} from "consola";
 import { colorize } from "consola/utils";
 import Elysia from "elysia";
-import { loggerInstance } from "#/utils/logger-instance";
+import { log } from "#/utils/logger-instance";
 
 export function logger() {
     return new Elysia()
@@ -20,13 +20,13 @@ export function logger() {
             const url = new URL(ctx.request.url);
             const duration: number = Date.now() - (ctx.startTime || Date.now());
 
-            loggerInstance.info(`${ctx.request.method} ${url.pathname} ${colorize("gray", `${duration}ms`)}`);
+            log.info(`${ctx.request.method} ${url.pathname} ${colorize("gray", `${duration}ms`)}`);
         })
         .onError({ as: "global" }, ({ request, error, startTime }) => {
             const url = new URL(request.url);
             const duration = Date.now() - (startTime || Date.now()) || 1;
 
-            loggerInstance.error(`${request.method} ${url.pathname} ${colorize("gray", `${duration}ms`)}`);
-            loggerInstance.debug(error);
+            log.error(`${request.method} ${url.pathname} ${colorize("gray", `${duration}ms`)}`);
+            log.debug(error);
         });
 }

@@ -1,6 +1,7 @@
 import { join } from "node:path";
 import { $, type BunFile } from "bun";
 import type { PackageJson } from "type-fest";
+import { env } from "#/env";
 
 /**
  * Retrieves the version string from the project's package.json file.
@@ -40,8 +41,8 @@ async function getPackageVersion(): Promise<string> {
  * console.log(hash); // "a1b2c3d4e5"
  */
 async function getGitHash(): Promise<string> {
-    if (Bun.env.GIT_COMMIT_HASH) {
-        return Bun.env.GIT_COMMIT_HASH;
+    if (Bun.env.GIT_COMMIT) {
+        return Bun.env.GIT_COMMIT;
     }
 
     try {
@@ -65,15 +66,11 @@ async function getGitHash(): Promise<string> {
  * console.log(version); // "1.0.0-a1b2c3d4e5"
  */
 export async function getCompositeVersion(): Promise<string> {
-    if (Bun.env.VERSION) {
-        return Bun.env.VERSION;
-    }
-
     try {
         const version: string = await getPackageVersion();
         const gitHash: string = await getGitHash();
 
-        Bun.env.VERSION = `${version}-${gitHash}`;
+        env.VERSION = `${version}-${gitHash}`;
 
         return `${version}-${gitHash}`;
     } catch (error) {

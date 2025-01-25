@@ -56,8 +56,6 @@ COPY --from=prerelease /usr/src/app/src src
 ENV PORT=3000
 ENV NAME="Enterprise Asset Management API"
 ENV DESCRIPTION="API for managing enterprise assets."
-ENV GIT_COMMIT_HASH=""
-ENV BUILD_TIMESTAMP=""
 
 USER appuser
 

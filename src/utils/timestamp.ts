@@ -21,3 +21,11 @@ export function formatTimestamp(date: Date = new Date()): string {
 export function getCurrentTimestamp(): string {
     return formatTimestamp(new Date());
 }
+
+/**
+ * Gets current timestamp formatted as YYYY-MM-DDTHH:mm:ss.sssZ
+ * @returns Formatted current date string
+ */
+export const getUTCTimestamp = (): string => {
+    return new Date().toISOString();
+};

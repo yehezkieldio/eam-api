@@ -1,29 +1,28 @@
-import { getCompositeVersion } from "#/utils/version";
-await getCompositeVersion();
-
 import swagger from "@elysiajs/swagger";
 import { colorize } from "consola/utils";
 import { Elysia } from "elysia";
+import { env } from "#/env";
 import { logger } from "#/middlewares/logger";
-import { loggerInstance } from "#/utils/logger-instance";
+import { log } from "#/utils/logger-instance";
+import { getUTCTimestamp } from "#/utils/timestamp";
+import { getCompositeVersion } from "#/utils/version";
 
-if (!Bun.env.NAME || !Bun.env.DESCRIPTION) {
-    Bun.env.NAME = Bun.env.NAME || "Enterprise Asset Management API";
-    Bun.env.DESCRIPTION = Bun.env.DESCRIPTION || "API for managing enterprise assets.";
+await getCompositeVersion();
+
+if (!env.BUILD_DATE) {
+    env.BUILD_DATE = getUTCTimestamp();
 }
-
-const OPENAPI_DOCUMENTATION_PATH: string = "/reference";
 
 const api = new Elysia()
     .use(logger())
     .use(
         swagger({
-            path: OPENAPI_DOCUMENTATION_PATH,
+            path: env.OPENAPI_DOCUMENTATION_PATH,
             documentation: {
                 info: {
-                    title: Bun.env.NAME,
+                    title: env.NAME,
                     description: Bun.env.DESCRIPTION,
-                    version: Bun.env.VERSION,
+                    version: env.VERSION,
                 },
             },
         })
@@ -31,15 +30,20 @@ const api = new Elysia()
     .get("/health", () => {
         return {
             status: "ok",
-            version: Bun.env.VERSION,
+            version: env.VERSION,
+            build_date: env.BUILD_DATE,
         };
     });
 
-api.listen(Bun.env.PORT, () => {
-    loggerInstance.success(
-        `API is running on port ${colorize("blueBright", Number(api.server?.port))} at ${colorize("blueBright", String(api.server?.hostname))}`
-    );
-    loggerInstance.success(
-        `OpenAPI documentation using Scalar is available at ${colorize("blueBright", OPENAPI_DOCUMENTATION_PATH)}`
-    );
+api.listen(env.PORT, () => {
+    const port: string = colorize("blueBright", env.PORT);
+    const hostname: string = colorize("blueBright", api.server?.hostname || "localhost");
+    const documentation: string = colorize("blueBright", env.OPENAPI_DOCUMENTATION_PATH);
+
+    const version: string = colorize("blueBright", env.VERSION);
+    const buildDate: string = colorize("blueBright", env.BUILD_DATE!);
+
+    log.success(`Version and build date: ${version} (${buildDate})`);
+    log.success(`API is running on port ${port} at ${hostname}`);
+    log.success(`OpenAPI documentation using Scalar is available at ${documentation}`);
 });
