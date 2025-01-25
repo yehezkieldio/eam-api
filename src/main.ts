@@ -28,8 +28,11 @@ const api = new Elysia()
             },
         })
     )
-    .get("/", () => {
-        return "Hello, World!";
+    .get("/health", () => {
+        return {
+            status: "ok",
+            version: Bun.env.VERSION,
+        };
     });
 
 api.listen(Bun.env.PORT, () => {

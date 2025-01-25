@@ -48,6 +48,7 @@ export function createLoggerInstance(baseLogger: ConsolaInstance): ConsolaInstan
 
 export const loggerInstance: ConsolaInstance = createLoggerInstance(
     createConsola({
+        level: 5,
         formatOptions: {
             compact: true,
             date: false,

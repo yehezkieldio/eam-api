@@ -27,6 +27,6 @@ export function logger() {
             const duration = Date.now() - (startTime || Date.now()) || 1;
 
             loggerInstance.error(`${request.method} ${url.pathname} ${colorize("gray", `${duration}ms`)}`);
-            loggerInstance.error(error);
+            loggerInstance.debug(error);
         });
 }
