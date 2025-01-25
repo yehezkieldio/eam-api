@@ -8,7 +8,8 @@
         "start:dev": "bun run --hot .",
         "start:docker-test": "docker run --name eam-api --network host -e PORT=3000 -p 3000:3000 eam-api",
         "db:generate": "bunx prisma generate",
-        "compose:dev": "docker compose -f docker-compose.dev.yml up -d",
+        "compose:dev": "docker compose -f docker-compose.yml --profile development up -d",
+        "compose:dev:down": "docker compose -f docker-compose.yml --profile development down",
         "docker:build": "docker build --build-arg GIT_COMMIT=$(git rev-parse --short=10 HEAD) --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') -t eam-api:latest .",
         "biome": "biome check .",
         "biome:fix": "biome check . --write"

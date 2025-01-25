@@ -1,6 +1,7 @@
 services:
-  postgres:
+  db-production:
     container_name: eam-db-production
+    profiles: [production]
     image: postgres:latest
     environment:
       POSTGRES_USER: elizielx
@@ -17,8 +18,22 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  db-development:
+    container_name: eam-db-development
+    profiles: [development]
+    image: postgres:latest
+    network_mode: "host"
+    environment:
+      POSTGRES_USER: elizielx
+      POSTGRES_PASSWORD: elizielx
+      POSTGRES_DB: eam
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
   api:
     container_name: eam-api-production
+    profiles: [production]
     build:
       context: .
       dockerfile: Dockerfile
@@ -27,7 +42,7 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      postgres:
+      db-production:
         condition: service_healthy
     networks:
       - eam-network
