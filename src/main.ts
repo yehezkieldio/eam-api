@@ -43,7 +43,7 @@ api.listen(env.PORT, () => {
     const version: string = colorize("blueBright", env.VERSION);
     const buildDate: string = colorize("blueBright", env.BUILD_DATE!);
 
-    log.success(`Version and build date: ${version} (${buildDate})`);
+    log.success(`Version and Build Date: ${version} (${buildDate})`);
     log.success(`API is running on port ${port} at ${hostname}`);
     log.success(`OpenAPI documentation using Scalar is available at ${documentation}`);
 });
