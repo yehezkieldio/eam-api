@@ -17,7 +17,7 @@ build-and-push-image:
       docker build \
         --build-arg GIT_COMMIT=$(echo $CI_COMMIT_SHORT_SHA) \
         --build-arg BUILD_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ') \
-        -f ./docker/Dockerfile \
+        -f ./Dockerfile \
         -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG \
         -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA \
         .
