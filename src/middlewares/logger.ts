@@ -1,3 +1,4 @@
+import type { ConsolaInstance } from "consola";
 import type { ColorName } from "consola/utils";
 import Elysia, { NotFoundError, ValidationError } from "elysia";
 import {
@@ -9,7 +10,7 @@ import {
     type ValidationErrorElement,
     type ValidationErrorTypeCheck,
 } from "#/libs/error";
-import { getColorFn, log as initialLog } from "#/libs/logging";
+import { getColorFn, logging } from "#/libs/logging";
 
 const STATUS_COLOR_MAP: { [k in number]?: ColorName } = {
     200: "green",
@@ -44,7 +45,7 @@ const initialErrorResponse: ErrorResponse = {
 
 export function logger() {
     return new Elysia()
-        .decorate("log", initialLog)
+        .decorate("log", logging)
         .decorate("initialErrorResponse", initialErrorResponse)
         .decorate("errorStatus", ErrorStatus)
         .error({
@@ -63,7 +64,7 @@ export function logger() {
             }
         )
         .onAfterHandle({ as: "global" }, (ctx) => {
-            const log = ctx.log;
+            const log: ConsolaInstance = ctx.log;
 
             const method: string = getColorFn("bold")(ctx.request.method.padEnd(4));
             const url: string = getColorFn("white")(new URL(ctx.request.url).pathname.padEnd(4));
@@ -81,7 +82,7 @@ export function logger() {
             log.trace(`Response sent: ${statusCode} ${getColorFn("gray")(JSON.stringify(ctx.response))}`);
         })
         .onError({ as: "global" }, (ctx) => {
-            const log = ctx.log;
+            const log: ConsolaInstance = ctx.log;
             const data: ErrorResponse = ctx.initialErrorResponse;
             const error = ctx.error;
 

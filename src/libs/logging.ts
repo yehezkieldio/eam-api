@@ -212,7 +212,7 @@ function formatPayload(payload: LogObject, opts: FormatOptions) {
  * @example
  * log.info("Hello, world!");
  */
-export const log: ConsolaInstance = createConsola({
+export const logging: ConsolaInstance = createConsola({
     level: logLevel,
     reporters: [
         {

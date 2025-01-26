@@ -2,7 +2,7 @@ import swagger from "@elysiajs/swagger";
 import { Elysia, t } from "elysia";
 import type { Server } from "elysia/universal";
 import { env } from "#/env";
-import { getColorFn, log } from "#/libs/logging";
+import { getColorFn, logging as log } from "#/libs/logging";
 import { getCompositeVersion } from "#/libs/version";
 import { logger } from "#/middlewares/logger";
 
