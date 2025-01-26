@@ -5,7 +5,7 @@
     "type": "module",
     "scripts": {
         "start": "bun run .",
-        "start:dev": "bun run --hot .",
+        "start:dev": "bun run --watch .",
         "db:generate": "bunx prisma generate",
         "db:push": "bunx prisma db push",
         "db:migrate:deploy": "bunx prisma migrate deploy",

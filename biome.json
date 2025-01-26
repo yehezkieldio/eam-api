@@ -30,7 +30,8 @@
             },
             "correctness": {
                 "noUnusedImports": "warn",
-                "noUnusedVariables": "warn"
+                "noUnusedVariables": "info",
+                "noUnusedFunctionParameters": "info"
             },
             "complexity": {
                 "noStaticOnlyClass": "off",
@@ -45,6 +46,9 @@
             },
             "nursery": {
                 "useConsistentMemberAccessibility": "off"
+            },
+            "performance": {
+                "useTopLevelRegex": "off"
             }
         }
     },

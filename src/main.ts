@@ -1,17 +1,12 @@
 import swagger from "@elysiajs/swagger";
-import { colorize } from "consola/utils";
-import { Elysia } from "elysia";
+import { Elysia, t } from "elysia";
+import type { Server } from "elysia/universal";
 import { env } from "#/env";
+import { getColorFn, log } from "#/libs/logging";
+import { getCompositeVersion } from "#/libs/version";
 import { logger } from "#/middlewares/logger";
-import { log } from "#/utils/logger-instance";
-import { getUTCTimestamp } from "#/utils/timestamp";
-import { getCompositeVersion } from "#/utils/version";
 
 await getCompositeVersion();
-
-if (!env.BUILD_DATE) {
-    env.BUILD_DATE = getUTCTimestamp();
-}
 
 const api = new Elysia()
     .use(logger())
@@ -27,23 +22,61 @@ const api = new Elysia()
             },
         })
     )
-    .get("/health", () => {
-        return {
-            status: "ok",
-            version: env.VERSION,
-            build_date: env.BUILD_DATE,
-        };
-    });
+    .post("/error-body/:id", () => "Hello World!", {
+        body: t.Object({
+            name: t.String({
+                error: "name is required and must be a string",
+            }),
+            profession: t.String({
+                error: "profession is required and must be a string",
+            }),
+        }),
+        params: t.Object({
+            id: t.Numeric({
+                error: "id is required and must be a number",
+            }),
+        }),
+    })
+    .get(
+        "/health",
+        () => {
+            return {
+                status: "ok",
+                version: env.VERSION,
+                build_date: env.BUILD_DATE || new Date().toISOString(),
+            };
+        },
+        {
+            response: {
+                200: t.Object({
+                    status: t.String({
+                        description: "Status of the API, which should always be 'ok'.",
+                    }),
+                    version: t.String({
+                        description: "Combination of the semantic version and the Git commit hash.",
+                    }),
+                    build_date: t.String({
+                        description: "Date and time the API was built or deployed.",
+                    }),
+                }),
+            },
+            detail: {
+                description: "View the health status of the API with version and build date.",
+            },
+        }
+    );
 
-api.listen(env.PORT, () => {
-    const port: string = colorize("blueBright", env.PORT);
-    const hostname: string = colorize("blueBright", api.server?.hostname || "localhost");
-    const documentation: string = colorize("blueBright", env.OPENAPI_DOCUMENTATION_PATH);
+api.listen(env.PORT, (server: Server) => {
+    const port: string = getColorFn("cyan")(env.PORT);
+    const host: string = getColorFn("cyan")(server.hostname);
+    const url = getColorFn("gray")(server.url.toString().replace(/\/$/, ""));
 
-    const version: string = colorize("blueBright", env.VERSION);
-    const buildDate: string = colorize("blueBright", env.BUILD_DATE!);
+    const version: string = getColorFn("bold")(getColorFn("cyan")(`v${env.VERSION}`));
+    const buildDate: string = getColorFn("gray")(env.BUILD_DATE!);
 
-    log.success(`Version and Build Date: ${version} (${buildDate})`);
-    log.success(`API is running on port ${port} at ${hostname}`);
-    log.success(`OpenAPI documentation using Scalar is available at ${documentation}`);
+    const documentation: string = getColorFn("gray")(url + env.OPENAPI_DOCUMENTATION_PATH);
+
+    log.success(`${version} (${buildDate})`);
+    log.ready(`API is running on port ${port} at ${host} (${url})`);
+    log.ready(`OpenAPI documentation using Scalar is available at ${documentation}`);
 });

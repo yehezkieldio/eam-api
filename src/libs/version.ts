@@ -3,15 +3,6 @@ import { $, type BunFile } from "bun";
 import type { PackageJson } from "type-fest";
 import { env } from "#/env";
 
-/**
- * Retrieves the version string from the project's package.json file.
- *
- * @returns {Promise<string>} The version string from package.json, or "unknown" if not found
- * @throws {Error} When there's an error reading or parsing the package.json file
- * @example
- * const version = await getPackageVersion();
- * console.log(version); // "1.0.0"
- */
 async function getPackageVersion(): Promise<string> {
     const path: string = join(import.meta.dir, "../../package.json");
 
@@ -30,16 +21,6 @@ async function getPackageVersion(): Promise<string> {
     }
 }
 
-/**
- * Retrieves the short Git commit hash of the current HEAD.
- * Executes a git command to get the first 10 characters of the current commit hash.
- *
- * @returns {Promise<string>} A 10-character Git commit hash, or "unknown" if not available
- * @throws {Error} When there's an error executing the git command or repository is not available
- * @example
- * const hash = await getGitHash();
- * console.log(hash); // "a1b2c3d4e5"
- */
 async function getGitHash(): Promise<string> {
     if (Bun.env.GIT_COMMIT) {
         return Bun.env.GIT_COMMIT;

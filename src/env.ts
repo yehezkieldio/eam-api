@@ -9,6 +9,7 @@ export const env = createEnv(
         PORT: t.Number({ default: 3000 }),
         OPENAPI_DOCUMENTATION_PATH: t.String({ default: "/reference" }),
         GIT_COMMIT: t.Optional(t.String()),
-        BUILD_DATE: t.Optional(t.String()),
+        BUILD_DATE: t.Optional(t.String({ default: new Date().toISOString() })),
+        TRACE_LOG: t.Optional(t.Boolean({ default: false })),
     })
 );
