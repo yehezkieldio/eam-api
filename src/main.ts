@@ -2,6 +2,7 @@ import swagger from "@elysiajs/swagger";
 import { Elysia, t } from "elysia";
 import type { Server } from "elysia/universal";
 import { env } from "#/env";
+import {} from "#/libs/error";
 import { getColorFn, logging as log } from "#/libs/logging";
 import { getCompositeVersion } from "#/libs/version";
 import { logger } from "#/middlewares/logger";
@@ -22,21 +23,6 @@ const api = new Elysia()
             },
         })
     )
-    .post("/error-body/:id", () => "Hello World!", {
-        body: t.Object({
-            name: t.String({
-                error: "name is required and must be a string",
-            }),
-            profession: t.String({
-                error: "profession is required and must be a string",
-            }),
-        }),
-        params: t.Object({
-            id: t.Numeric({
-                error: "id is required and must be a number",
-            }),
-        }),
-    })
     .get(
         "/health",
         () => {

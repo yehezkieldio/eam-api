@@ -4,7 +4,6 @@ import Elysia, { NotFoundError, ValidationError } from "elysia";
 import {
     ClientError,
     type ErrorResponse,
-    ErrorStatus,
     ServerError,
     type ValidationErrorDetail,
     type ValidationErrorElement,
@@ -46,8 +45,6 @@ const initialErrorResponse: ErrorResponse = {
 export function logger() {
     return new Elysia()
         .decorate("log", logging)
-        .decorate("initialErrorResponse", initialErrorResponse)
-        .decorate("errorStatus", ErrorStatus)
         .error({
             ClientError,
             ServerError,
@@ -83,7 +80,7 @@ export function logger() {
         })
         .onError({ as: "global" }, (ctx) => {
             const log: ConsolaInstance = ctx.log;
-            const data: ErrorResponse = ctx.initialErrorResponse;
+            const data: ErrorResponse = initialErrorResponse;
             const error = ctx.error;
 
             const method: string = getColorFn("bold")(ctx.request.method.padEnd(4));
