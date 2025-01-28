@@ -57,7 +57,7 @@ export function getColorFn(color: ColorName = "white"): ColorFunction {
     return colors[color] || colors.white;
 }
 
-function getBgColor(color = "white") {
+function getBgColor(color = "white"): ColorFunction {
     const firstLetter = color[0].toUpperCase();
     const rest = color.slice(1);
     const colorName: ColorName = `bg${firstLetter}${rest}` as ColorName;
@@ -94,7 +94,7 @@ function parseStack(stack: string): string[] {
     return lines;
 }
 
-function formatStack(stack: string, opts: FormatOptions) {
+function formatStack(stack: string, opts: FormatOptions): string {
     const indent = "  ".repeat((opts?.errorLevel || 0) + 1);
     return `\n${indent}${parseStack(stack)
         .map(
@@ -119,8 +119,8 @@ function formatError(err: unknown, opts: FormatOptions): string {
     return `${causedPrefix + message}\n${stack}${causedError}`;
 }
 
-function formatTimestamp(date: Date): string {
-    const _date = dateFormatter.format(date).replace(/\./g, "/").replace(",", "");
+export function formatTimestamp(date: Date): string {
+    const _date: string = dateFormatter.format(date).replace(/\./g, "/").replace(",", "");
     return getColorFn("gray")(`[${_date}]`);
 }
 
@@ -133,7 +133,7 @@ function createTextStyle(typePrefix: string, typeColor: ColorName): string {
 }
 
 // This is unnecessarily complex, but too many else if statements are ugly and poor for my cognitive load.
-function formatType(payload: LogObject, isBadge: boolean) {
+function formatType(payload: LogObject, isBadge: boolean): string {
     const typeColor: ColorName = TYPE_COLOR_MAP[payload.type] as ColorName;
     const typePrefix: string = TYPE_PREFIX[payload.type] || payload.type.toUpperCase();
 
@@ -177,7 +177,7 @@ function formatArgs(args: unknown[], opts: FormatOptions): string {
     return formatWithOptions(opts, ..._args);
 }
 
-function formatPayload(payload: LogObject, opts: FormatOptions) {
+function formatPayload(payload: LogObject, opts: FormatOptions): string {
     if (payload.args[0] === "\n") {
         return "";
     }
@@ -206,18 +206,12 @@ function formatPayload(payload: LogObject, opts: FormatOptions) {
 
 /* -------------------------------------------------------------------------- */
 
-/**
- * A customized logger instance based on Consola.
- * @type {ConsolaInstance}
- * @example
- * log.info("Hello, world!");
- */
-export const logging: ConsolaInstance = createConsola({
+export const log: ConsolaInstance = createConsola({
     level: logLevel,
     reporters: [
         {
             log(logObj: LogObject, ctx: { options: ConsolaOptions }): boolean {
-                const line = formatPayload(logObj, {
+                const line: string = formatPayload(logObj, {
                     columns: ctx.options.stdout?.columns || 0,
                     ...ctx.options.formatOptions,
                 });
