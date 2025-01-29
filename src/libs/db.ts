@@ -37,19 +37,18 @@ const logPrisma = log.withTag("PRISMA");
 
 db.$on("query", (e) => {
     logPrisma.trace(e.query);
-    logPrisma.trace(`Query took ${e.duration}ms`);
 });
 
 db.$on("info", (e) => {
-    logPrisma.info(e.message);
+    logPrisma.trace(e.message);
 });
 
 db.$on("warn", (e) => {
-    logPrisma.warn(e.message);
+    logPrisma.trace(e.message);
 });
 
 db.$on("error", (e) => {
-    logPrisma.error(e.message);
+    logPrisma.trace(e.message);
 });
 
 if (env.NODE_ENV !== "production") {

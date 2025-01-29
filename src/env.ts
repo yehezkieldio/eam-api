@@ -12,5 +12,11 @@ export const env = createEnv(
         TRACE_LOG: t.Optional(t.Boolean({ default: false })),
         GIT_COMMIT: t.String({ default: "unknown" }),
         BUILD_DATE: t.Optional(t.String({ default: "unknown" })),
+        /**
+         * Whether to reorder the log line to be more readable.
+         * If true, the log line will be [LEVEL] [DATE] [MESSAGE].
+         * If false, the log line will be [DATE] [LEVEL] [MESSAGE].
+         */
+        REORDER_LOG_LINE: t.Optional(t.Boolean({ default: false })),
     })
 );

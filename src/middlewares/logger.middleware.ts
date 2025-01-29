@@ -49,13 +49,18 @@ export function useLoggerMiddleware() {
 
             log.info(`${method} ${url} ${statusCode} ${duration}`);
 
-            log.trace(`Request received: ${ctx.request.method} ${new URL(ctx.request.url).pathname}`);
-            log.trace(`Request Headers: ${c("gray")(JSON.stringify(ctx.request.headers))}`);
-            log.trace(`Request Body: ${c("gray")(JSON.stringify(ctx.body))}`);
-            log.trace(`Request Query: ${c("gray")(JSON.stringify(ctx.query))}`);
-            log.trace(`Request Params: ${c("gray")(JSON.stringify(ctx.params))}`);
-            log.trace(`Request Cookies: ${c("gray")(JSON.stringify(ctx.cookie))}`);
-            log.trace(`Response sent: ${statusCode} ${c("gray")(JSON.stringify(ctx.response))}`);
+            const { headers, body, query, params, cookie } = ctx;
+            const requestData = {
+                ...(headers && { headers }),
+                ...(body !== undefined && { body }),
+                ...(Object.keys(query || {}).length && { query }),
+                ...(Object.keys(params || {}).length && { params }),
+                ...(Object.keys(cookie || {}).length && { cookie }),
+            };
+
+            if (Object.keys(requestData).length) {
+                log.trace("Request: ", JSON.stringify(requestData, null, 2));
+            }
         })
         .onError({ as: "global" }, (ctx) => {
             const error = ctx.error;
@@ -66,15 +71,19 @@ export function useLoggerMiddleware() {
             const duration: string = c("gray")(`${formatTime(Date.now() - (ctx.startTime || Date.now()))}`);
 
             log.error(`${method} ${url} ${statusCode} ${duration}`);
+            log.trace("Error: ", error);
 
-            log.trace(`Request received: ${ctx.request.method} ${new URL(ctx.request.url).pathname}`);
-            log.trace(`Request Headers: ${c("gray")(JSON.stringify(ctx.request.headers))}`);
-            log.trace(`Request Body: ${c("gray")(JSON.stringify(ctx.body))}`);
-            log.trace(`Request Query: ${c("gray")(JSON.stringify(ctx.query))}`);
-            log.trace(`Request Params: ${c("gray")(JSON.stringify(ctx.params))}`);
-            log.trace(`Request Cookies: ${c("gray")(JSON.stringify(ctx.cookie))}`);
-            log.trace(`Response sent: ${statusCode} ${c("gray")(JSON.stringify(ctx.response))}`);
+            const { headers, body, query, params, cookie } = ctx;
+            const requestData = {
+                ...(headers && { headers }),
+                ...(body !== undefined && { body }),
+                ...(Object.keys(query || {}).length && { query }),
+                ...(Object.keys(params || {}).length && { params }),
+                ...(Object.keys(cookie || {}).length && { cookie }),
+            };
 
-            log.trace(`Error: ${JSON.stringify(error)}`);
+            if (Object.keys(requestData).length) {
+                log.trace("Request: ", JSON.stringify(requestData, null, 2));
+            }
         });
 }

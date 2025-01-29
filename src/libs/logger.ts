@@ -5,8 +5,6 @@ import { type ConsolaOptions, createConsola } from "consola/core";
 import { type ColorFunction, type ColorName, colors, stripAnsi } from "consola/utils";
 import { env } from "#/env";
 
-type FormatStyleFn = () => string;
-
 // Production environment should have log level set to info, and development should have it set to debug.
 // With optional TRACE_LOG environment variable to log extremely detailed information on the execution of the application.
 let logLevel: number =
@@ -168,7 +166,7 @@ function formatType(payload: LogObject, isBadge: boolean): string {
     }
 
     const visibleLength: number = stripAnsi(formatter).length;
-    const padding: number = Math.max(0, 7 - visibleLength);
+    const padding: number = Math.max(0, 8 - visibleLength);
 
     return formatter + " ".repeat(padding);
 }
@@ -198,12 +196,15 @@ function formatPayload(payload: LogObject, opts: FormatOptions): string {
 
     if (payload.type === "trace" || payload.tag) {
         message = getColorFn("gray")(message);
+        additional = additional.map((line) => getColorFn("gray")(line));
     }
 
     let line: string;
     const format: string = isLogType
         ? [date, characterFormat(message)].join(" ")
-        : [date, type, characterFormat(message)].join(" ");
+        : env.REORDER_LOG_LINE
+          ? [type, date, characterFormat(message)].join(" ")
+          : [date, type, characterFormat(message)].join(" ");
 
     line = format;
     line += characterFormat(additional.length > 0 ? `\n${additional.join("\n")}` : "");
