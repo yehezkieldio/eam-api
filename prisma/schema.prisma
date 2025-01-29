@@ -6,7 +6,7 @@ generator prismabox {
   provider                    = "prismabox"
   typeboxImportVariableName   = "t"
   typeboxImportDependencyName = "elysia"
-  additionalProperties        = true
+  additionalProperties        = false
   inputModel                  = true
 }
 
