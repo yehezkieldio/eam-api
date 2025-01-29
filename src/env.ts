@@ -5,9 +5,12 @@ export const env = createEnv(
         NAME: t.String({ default: "Enterprise Asset Management API" }),
         DESCRIPTION: t.String({ default: "API for managing enterprise assets." }),
         VERSION: t.String({ default: "unknown" }),
+        REVISION: t.Optional(t.String({ default: "unknown" })),
         NODE_ENV: t.String({ default: "development" }),
         PORT: t.Number({ default: 3000 }),
         OPENAPI_DOCUMENTATION_PATH: t.String({ default: "/reference" }),
         TRACE_LOG: t.Optional(t.Boolean({ default: false })),
+        GIT_COMMIT: t.String({ default: "unknown" }),
+        BUILD_DATE: t.Optional(t.String({ default: "unknown" })),
     })
 );

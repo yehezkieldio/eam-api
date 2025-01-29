@@ -5,25 +5,27 @@ import { log } from "#/libs/logger";
 
 const createPrismaClient = () =>
     new PrismaClient({
-        // log: env.NODE_ENV === "development" ? ["query", "error", "warn"] : ["error"],
-        log: [
-            {
-                emit: "event",
-                level: "query",
-            },
-            {
-                emit: "stdout",
-                level: "error",
-            },
-            {
-                emit: "stdout",
-                level: "info",
-            },
-            {
-                emit: "stdout",
-                level: "warn",
-            },
-        ],
+        log:
+            env.NODE_ENV === "development"
+                ? [
+                      {
+                          emit: "event",
+                          level: "query",
+                      },
+                      {
+                          emit: "event",
+                          level: "error",
+                      },
+                      {
+                          emit: "event",
+                          level: "info",
+                      },
+                      {
+                          emit: "event",
+                          level: "warn",
+                      },
+                  ]
+                : ["error"],
     });
 
 const globalForPrisma = globalThis as unknown as {
@@ -31,11 +33,23 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 export const db = globalForPrisma.prisma ?? createPrismaClient();
+const logPrisma = log.withTag("PRISMA");
 
 db.$on("query", (e) => {
-    log.trace(`Prisma Query: ${e.query}`);
-    log.trace(`Prisma Params: ${e.params}`);
-    log.trace(`Prisma Duration: ${e.duration}ms`);
+    logPrisma.trace(e.query);
+    logPrisma.trace(`Query took ${e.duration}ms`);
+});
+
+db.$on("info", (e) => {
+    logPrisma.info(e.message);
+});
+
+db.$on("warn", (e) => {
+    logPrisma.warn(e.message);
+});
+
+db.$on("error", (e) => {
+    logPrisma.error(e.message);
 });
 
 if (env.NODE_ENV !== "production") {

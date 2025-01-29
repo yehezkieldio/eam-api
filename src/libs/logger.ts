@@ -168,7 +168,7 @@ function formatType(payload: LogObject, isBadge: boolean): string {
     }
 
     const visibleLength: number = stripAnsi(formatter).length;
-    const padding: number = Math.max(0, 8 - visibleLength);
+    const padding: number = Math.max(0, 7 - visibleLength);
 
     return formatter + " ".repeat(padding);
 }
@@ -203,7 +203,7 @@ function formatPayload(payload: LogObject, opts: FormatOptions): string {
     let line: string;
     const format: string = isLogType
         ? [date, characterFormat(message)].join(" ")
-        : [type, date, characterFormat(message)].join(" ");
+        : [date, type, characterFormat(message)].join(" ");
 
     line = format;
     line += characterFormat(additional.length > 0 ? `\n${additional.join("\n")}` : "");
