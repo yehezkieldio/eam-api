@@ -29,6 +29,7 @@ const healthModule = new Elysia().get(
         },
         detail: {
             description: "View the health status of the API.",
+            tags: ["General"],
         },
     }
 );
@@ -41,6 +42,16 @@ const swaggerConfig: ElysiaSwaggerConfig<typeof env.OPENAPI_DOCUMENTATION_PATH> 
             description: env.DESCRIPTION,
             version: env.REVISION!,
         },
+        tags: [
+            {
+                name: "General",
+                description: "General endpoints, such as health checks.",
+            },
+            {
+                name: "Users",
+                description: "Endpoints for managing users.",
+            },
+        ],
     },
 };
 

@@ -13,7 +13,7 @@ const UserSelect: Partial<Prisma.UserSelect> = {
     updated_at: true,
 };
 
-export const usersModule = new Elysia({ name: "Module.User" }).group("/users", (api) =>
+export const usersModule = new Elysia({ name: "Module.User", tags: ["Users"] }).group("/users", (api) =>
     api
         .model({
             "user.many": t.Array(t.Omit(UserPlain, ["password", "deleted_at"])),
@@ -53,7 +53,7 @@ export const usersModule = new Elysia({ name: "Module.User" }).group("/users", (
                 });
 
                 if (!user) {
-                    throw ctx.error("Bad Request", "User not found.");
+                    throw ctx.error("Not Found", "User not found.");
                 }
 
                 return user;
@@ -66,7 +66,9 @@ export const usersModule = new Elysia({ name: "Module.User" }).group("/users", (
                 }),
                 response: {
                     200: "user.one",
-                    400: t.String(),
+                    404: t.String({
+                        default: "User not found.",
+                    }),
                 },
                 detail: {
                     description: "View a user by ID.",

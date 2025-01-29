@@ -59,6 +59,8 @@ export function useResponseMapperMiddleware() {
                 timestamp: new Date().toISOString(),
             } satisfies ErrorResponse;
 
+            ctx.set.status = error.code;
+
             return Response.json(_response);
         });
 }
