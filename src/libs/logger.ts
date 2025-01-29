@@ -6,7 +6,6 @@ import { type ColorFunction, type ColorName, colors, stripAnsi } from "consola/u
 import { env } from "#/env";
 
 type FormatStyleFn = () => string;
-type FormatStylesMap = Record<LogType | "default", FormatStyleFn>;
 
 // Production environment should have log level set to info, and development should have it set to debug.
 // With optional TRACE_LOG environment variable to log extremely detailed information on the execution of the application.
@@ -134,38 +133,44 @@ function createTextStyle(typePrefix: string, typeColor: ColorName): string {
     return getColorFn("bold")(getColorFn(typeColor)(typePrefix));
 }
 
-// This is unnecessarily complex, but too many else if statements are ugly and poor for my cognitive load.
 function formatType(payload: LogObject, isBadge: boolean): string {
-    const typeColor: ColorName = TYPE_COLOR_MAP[payload.type] as ColorName;
-    const typePrefix: string = TYPE_PREFIX[payload.type] || payload.type.toUpperCase();
+    let formatter: string;
+    let typeColor: ColorName;
+    let prefix: string;
 
-    const FORMAT_STYLES: FormatStylesMap = {
-        fatal: (): string => createBadgeStyle(payload, typeColor),
-        fail: (): string => createBadgeStyle(payload, typeColor),
-        error: (): string => createTextStyle(typePrefix, typeColor),
-        warn: (): string => createTextStyle(typePrefix, typeColor),
-        info: (): string => createTextStyle(typePrefix, typeColor),
-        success: (): string => createTextStyle(typePrefix, typeColor),
-        debug: (): string => createTextStyle(typePrefix, typeColor),
-        trace: (): string => createTextStyle(typePrefix, typeColor),
-        start: (): string => createTextStyle(typePrefix, typeColor),
-        log: (): string => createTextStyle(typePrefix, typeColor),
-        silent: (): string => createTextStyle(typePrefix, typeColor),
-        ready: (): string => createTextStyle(typePrefix, typeColor),
-        box: (): string => createTextStyle(typePrefix, typeColor),
-        verbose: (): string => createTextStyle(typePrefix, typeColor),
-        default: (): string => {
-            return isBadge ? createBadgeStyle(payload, typeColor) : createTextStyle(typePrefix, typeColor);
-        },
-    };
+    if (payload.tag) {
+        typeColor = "gray";
+        prefix = payload.tag.toUpperCase();
+        formatter = createTextStyle(prefix, typeColor);
+    } else {
+        typeColor = TYPE_COLOR_MAP[payload.type] as ColorName;
+        prefix = TYPE_PREFIX[payload.type] || payload.type.toUpperCase();
 
-    const formatter: FormatStyleFn = FORMAT_STYLES[payload.type] || FORMAT_STYLES.default;
-    const formattedType: string = formatter();
+        const simpleTextTypes = [
+            "error",
+            "warn",
+            "info",
+            "success",
+            "debug",
+            "trace",
+            "start",
+            "log",
+            "silent",
+            "ready",
+            "box",
+            "verbose",
+        ];
 
-    const visibleLength: number = stripAnsi(formattedType).length;
-    const padding: number = Math.max(0, 7 - visibleLength);
+        const useBadge: boolean =
+            ["fatal", "fail"].includes(payload.type) || (!simpleTextTypes.includes(payload.type) && isBadge);
 
-    return formattedType + " ".repeat(padding);
+        formatter = useBadge ? createBadgeStyle(payload, typeColor) : createTextStyle(prefix, typeColor);
+    }
+
+    const visibleLength: number = stripAnsi(formatter).length;
+    const padding: number = Math.max(0, 8 - visibleLength);
+
+    return formatter + " ".repeat(padding);
 }
 
 function formatArgs(args: unknown[], opts: FormatOptions): string {
@@ -191,7 +196,7 @@ function formatPayload(payload: LogObject, opts: FormatOptions): string {
     const isBadge: boolean = (payload.badge as boolean) ?? payload.level < 2;
     const type: string = isLogType ? "" : formatType(payload, isBadge);
 
-    if (payload.type === "trace") {
+    if (payload.type === "trace" || payload.tag) {
         message = getColorFn("gray")(message);
     }
 
