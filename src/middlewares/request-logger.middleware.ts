@@ -28,7 +28,9 @@ function formatTime(time: number): string {
 }
 
 export function useRequestLoggerMiddleware() {
-    return new Elysia()
+    return new Elysia({
+        name: "RequestLogger",
+    })
         .error({
             ClientError,
             ServerError,

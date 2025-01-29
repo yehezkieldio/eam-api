@@ -123,6 +123,6 @@ export type ValidationSchemaError = {
     schema: TSchema;
 };
 
-export type ValidationError = { summary: undefined } | ValidationResult;
+export type ValidationErrorAll = { summary: undefined } | ValidationResult;
 
 export type ValidationErrorCollection = Exclude<ValidationResult, { summary: undefined }>[];

@@ -1,3 +1,38 @@
-import { log } from "#/libs/logger";
+import Elysia, { t } from "elysia";
+import type { Server } from "elysia/universal";
+import { env } from "#/env";
+import { getColorFn as c, log } from "#/libs/logger";
+import { useRequestLoggerMiddleware } from "#/middlewares/request-logger.middleware";
+import { useResponseMapperMiddleware } from "#/middlewares/response-mapper.middleware";
 
-log.info("Hello, world!");
+export const api = new Elysia()
+    .use(useRequestLoggerMiddleware())
+    .use(useResponseMapperMiddleware())
+    .get(
+        "/health",
+        () => {
+            return {
+                status: "ok",
+            };
+        },
+        {
+            response: {
+                200: t.Object({
+                    status: t.String({
+                        description: "Status of the API, which should always be 'ok'.",
+                    }),
+                }),
+            },
+            detail: {
+                description: "View the health status of the API with version and build date.",
+            },
+        }
+    );
+
+api.listen(env.PORT, (server: Server): void => {
+    const port: string = c("cyan")(env.PORT);
+    const host: string = c("cyan")(server.hostname);
+    const url = c("gray")(server.url.toString().replace(/\/$/, ""));
+
+    log.ready(`API is running on port ${port} at ${host} (${url})`);
+});

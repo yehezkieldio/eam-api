@@ -31,7 +31,8 @@
             "correctness": {
                 "noUnusedImports": "warn",
                 "noUnusedVariables": "info",
-                "noUnusedFunctionParameters": "info"
+                "noUnusedFunctionParameters": "info",
+                "useHookAtTopLevel": "off"
             },
             "complexity": {
                 "noStaticOnlyClass": "off",
@@ -45,7 +46,8 @@
                 "noConsoleLog": "off"
             },
             "nursery": {
-                "useConsistentMemberAccessibility": "off"
+                "useConsistentMemberAccessibility": "off",
+                "noNestedTernary": "off"
             },
             "performance": {
                 "useTopLevelRegex": "off"

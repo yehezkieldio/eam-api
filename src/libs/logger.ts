@@ -10,7 +10,9 @@ type FormatStylesMap = Record<LogType | "default", FormatStyleFn>;
 
 // Production environment should have log level set to info, and development should have it set to debug.
 // With optional TRACE_LOG environment variable to log extremely detailed information on the execution of the application.
-let logLevel: number = env.NODE_ENV === "production" ? LogLevels.info : LogLevels.debug;
+let logLevel: number =
+    env.NODE_ENV === "test" ? LogLevels.silent : env.NODE_ENV === "production" ? LogLevels.info : LogLevels.debug;
+
 if (env.TRACE_LOG) {
     logLevel = LogLevels.trace;
 }
