@@ -1,4 +1,5 @@
 import Elysia, { NotFoundError, ValidationError } from "elysia";
+import { env } from "#/env";
 import {
     ClientError,
     ServerError,
@@ -8,6 +9,17 @@ import {
 } from "#/libs/error";
 import type { ErrorResponse } from "#/libs/response";
 
+const excludePaths: string[] = ["/health", env.OPENAPI_DOCUMENTATION_PATH];
+
+function shouldExcludePath(path: string): boolean {
+    const normalizedPath: string = path.replace(/\/+$/, "");
+
+    return excludePaths.some((excluded: string): boolean => {
+        const normalizedExcluded: string = excluded.replace(/\/+$/, "");
+        return normalizedPath === normalizedExcluded || normalizedPath.startsWith(`${normalizedExcluded}/`);
+    });
+}
+
 export function useResponseMapperMiddleware() {
     return new Elysia({
         name: "ResponseMapper",
@@ -15,9 +27,8 @@ export function useResponseMapperMiddleware() {
         .onAfterHandle({ as: "global" }, (ctx) => {
             const path: string = new URL(ctx.request.url).pathname;
 
-            // Don't map the response if the path is /health since it's a health check endpoint and should return the response as is
-            if (path === "/health") {
-                return ctx.response;
+            if (shouldExcludePath(path)) {
+                return;
             }
 
             const message: string = "success";

@@ -1,3 +1,4 @@
+import swagger from "@elysiajs/swagger";
 import Elysia, { t } from "elysia";
 import type { Server } from "elysia/universal";
 import { env } from "#/env";
@@ -8,6 +9,18 @@ import { useResponseMapperMiddleware } from "#/middlewares/response-mapper.middl
 export const api = new Elysia()
     .use(useLoggerMiddleware())
     .use(useResponseMapperMiddleware())
+    .use(
+        swagger({
+            path: env.OPENAPI_DOCUMENTATION_PATH,
+            documentation: {
+                info: {
+                    title: env.NAME,
+                    description: env.DESCRIPTION,
+                    version: env.VERSION,
+                },
+            },
+        })
+    )
     .get(
         "/health",
         () => {
@@ -19,12 +32,13 @@ export const api = new Elysia()
             response: {
                 200: t.Object({
                     status: t.String({
+                        default: "ok",
                         description: "Status of the API, which should always be 'ok'.",
                     }),
                 }),
             },
             detail: {
-                description: "View the health status of the API with version and build date.",
+                description: "View the health status of the API.",
             },
         }
     );

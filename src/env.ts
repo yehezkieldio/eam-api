@@ -7,7 +7,7 @@ export const env = createEnv(
         VERSION: t.String({ default: "unknown" }),
         NODE_ENV: t.String({ default: "development" }),
         PORT: t.Number({ default: 3000 }),
-        OPENAPI_DOCUMENTATION_PATH: t.Optional(t.String({ default: "/reference" })),
+        OPENAPI_DOCUMENTATION_PATH: t.String({ default: "/reference" }),
         TRACE_LOG: t.Optional(t.Boolean({ default: false })),
     })
 );
