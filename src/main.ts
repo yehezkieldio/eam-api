@@ -1,4 +1,4 @@
-import swagger from "@elysiajs/swagger";
+import swagger, { type ElysiaSwaggerConfig } from "@elysiajs/swagger";
 import Elysia, { t } from "elysia";
 import type { Server } from "elysia/universal";
 import { env } from "#/env";
@@ -33,21 +33,21 @@ const healthModule = new Elysia().get(
     }
 );
 
+const swaggerConfig: ElysiaSwaggerConfig<typeof env.OPENAPI_DOCUMENTATION_PATH> = {
+    path: env.OPENAPI_DOCUMENTATION_PATH,
+    documentation: {
+        info: {
+            title: env.NAME,
+            description: env.DESCRIPTION,
+            version: env.REVISION!,
+        },
+    },
+};
+
 export const api = new Elysia()
     .use(useLoggerMiddleware())
     .use(useResponseMapperMiddleware())
-    .use(
-        swagger({
-            path: env.OPENAPI_DOCUMENTATION_PATH,
-            documentation: {
-                info: {
-                    title: env.NAME,
-                    description: env.DESCRIPTION,
-                    version: env.REVISION!,
-                },
-            },
-        })
-    )
+    .use(swagger(swaggerConfig))
     .use(healthModule)
     .use(usersModule);
 
