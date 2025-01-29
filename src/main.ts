@@ -2,11 +2,11 @@ import Elysia, { t } from "elysia";
 import type { Server } from "elysia/universal";
 import { env } from "#/env";
 import { getColorFn as c, log } from "#/libs/logger";
-import { useRequestLoggerMiddleware } from "#/middlewares/request-logger.middleware";
+import { useLoggerMiddleware } from "#/middlewares/logger.middleware";
 import { useResponseMapperMiddleware } from "#/middlewares/response-mapper.middleware";
 
 export const api = new Elysia()
-    .use(useRequestLoggerMiddleware())
+    .use(useLoggerMiddleware())
     .use(useResponseMapperMiddleware())
     .get(
         "/health",

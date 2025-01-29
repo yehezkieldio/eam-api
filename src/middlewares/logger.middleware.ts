@@ -27,7 +27,7 @@ function formatTime(time: number): string {
     return time < 1000 ? `${time}ms` : `${(time / 1000).toFixed(2)}s`;
 }
 
-export function useRequestLoggerMiddleware() {
+export function useLoggerMiddleware() {
     return new Elysia({
         name: "RequestLogger",
     })
