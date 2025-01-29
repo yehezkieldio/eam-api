@@ -5,7 +5,8 @@
     "type": "module",
     "scripts": {
         "start": "bun run .",
-        "start:dev": "bun run --watch .",
+        "start:hot": "bun run --hot .",
+        "start:watch": "bun run --watch .",
         "build:exe": "bun run ./scripts/build.ts",
         "db:generate": "bunx prisma generate",
         "db:push": "bunx prisma db push",
@@ -45,6 +46,7 @@
         "@types/bun": "1.2.0",
         "@types/node": "^22.10.10",
         "prisma": "^6.2.1",
+        "prismabox": "^1.1.17",
         "ultracite": "^4.1.17"
     },
     "peerDependencies": {

@@ -9,7 +9,7 @@ const BaseResponseSchema = t.Object({
 export const SuccessResponseSchema = t.Composite([
     BaseResponseSchema,
     t.Object({
-        data: t.Unknown(),
+        data: t.Any(),
         status: t.Union([t.Number(), t.String()]),
     }),
 ]);
@@ -19,8 +19,8 @@ export type SuccessResponse = Static<typeof SuccessResponseSchema>;
 export const ErrorResponseSchema = t.Composite([
     BaseResponseSchema,
     t.Object({
-        details: t.Optional(t.Unknown()),
-        status: t.Number(),
+        details: t.Any(),
+        status: t.Union([t.Number(), t.String()]),
         code: t.String(),
         message: t.String(),
     }),

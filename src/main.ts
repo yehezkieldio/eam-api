@@ -5,6 +5,7 @@ import { env } from "#/env";
 import { getColorFn as c, log } from "#/libs/logger";
 import { useLoggerMiddleware } from "#/middlewares/logger.middleware";
 import { useResponseMapperMiddleware } from "#/middlewares/response-mapper.middleware";
+import { usersModule } from "#/modules/(users)";
 
 export const api = new Elysia()
     .use(useLoggerMiddleware())
@@ -41,7 +42,8 @@ export const api = new Elysia()
                 description: "View the health status of the API.",
             },
         }
-    );
+    )
+    .use(usersModule);
 
 api.listen(env.PORT, (server: Server): void => {
     const port: string = c("cyan")(env.PORT);

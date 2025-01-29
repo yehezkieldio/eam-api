@@ -2,6 +2,14 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator prismabox {
+  provider                    = "prismabox"
+  typeboxImportVariableName   = "t"
+  typeboxImportDependencyName = "elysia"
+  additionalProperties        = true
+  inputModel                  = true
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")

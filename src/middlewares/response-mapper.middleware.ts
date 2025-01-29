@@ -1,13 +1,7 @@
-import Elysia, { NotFoundError, ValidationError } from "elysia";
+import Elysia, {} from "elysia";
 import { env } from "#/env";
-import {
-    ClientError,
-    ServerError,
-    type ValidationErrorAll,
-    type ValidationResult,
-    type ValidationSchemaError,
-} from "#/libs/error";
-import type { ErrorResponse } from "#/libs/response";
+import { getStatusName } from "#/libs/error";
+import type { ErrorResponse, SuccessResponse } from "#/libs/response";
 
 const excludePaths: string[] = ["/health", env.OPENAPI_DOCUMENTATION_PATH];
 
@@ -20,9 +14,14 @@ function shouldExcludePath(path: string): boolean {
     });
 }
 
+type ErrorGuard = {
+    code: number;
+    response: number | string;
+};
+
 export function useResponseMapperMiddleware() {
     return new Elysia({
-        name: "ResponseMapper",
+        name: "Middleware.ResponseMapper",
     })
         .onAfterHandle({ as: "global" }, (ctx) => {
             const path: string = new URL(ctx.request.url).pathname;
@@ -32,64 +31,34 @@ export function useResponseMapperMiddleware() {
             }
 
             const message: string = "success";
+            const timestamp: string = new Date().toISOString();
             const response = ctx.response;
-            const timestamp = new Date().toISOString();
             const status = ctx.set.status ?? 200;
 
-            return {
-                path,
-                message,
-                response,
-                timestamp,
-                status,
-            };
+            const _response = {
+                path: path,
+                message: message,
+                data: response,
+                status: status,
+                timestamp: timestamp,
+            } satisfies SuccessResponse;
+
+            ctx.set.status = status;
+
+            return Response.json(_response);
         })
         .onError({ as: "global" }, (ctx) => {
-            const error = ctx.error;
+            const error = ctx.error as ErrorGuard;
 
-            const _response: ErrorResponse = {
+            const _response = {
                 path: new URL(ctx.request.url).pathname,
-                message: "",
-                code: "",
-                status: 500,
+                message: "error",
+                code: getStatusName(Number(error.code)),
+                details: error.response,
+                status: error.code,
                 timestamp: new Date().toISOString(),
-            };
+            } satisfies ErrorResponse;
 
-            if (error instanceof ValidationError) {
-                ctx.set.status = 400;
-                _response.status = 400;
-                _response.message = "The request contains invalid or missing data.";
-
-                const _details: ValidationSchemaError[] = error.all
-                    .filter(
-                        (item: ValidationErrorAll): item is Exclude<ValidationErrorAll, { summary: undefined }> =>
-                            item.summary !== undefined
-                    )
-                    .map(
-                        ({ schema, summary }: ValidationResult): ValidationSchemaError => ({
-                            type: error.type,
-                            message: summary,
-                            schema,
-                        })
-                    );
-
-                _response.details = _details;
-            }
-
-            if (error instanceof ClientError || error instanceof ServerError) {
-                ctx.set.status = error.status;
-                _response.status = error.status;
-                _response.code = error.code;
-                _response.message = error.message;
-            }
-
-            if (error instanceof NotFoundError) {
-                ctx.set.status = 404;
-                _response.status = 404;
-                _response.code = "not_found";
-                _response.message = "The requested resource was not found.";
-            }
-
-            return _response;
+            return Response.json(_response);
         });
 }

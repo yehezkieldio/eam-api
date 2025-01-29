@@ -23,7 +23,8 @@
         "noPropertyAccessFromIndexSignature": false,
 
         "paths": {
-            "#/*": ["./src/*"]
+            "#/*": ["./src/*"],
+            "#/prisma/*": ["./prisma/*"]
         }
     },
     "include": ["./env.d.ts", "**/*.ts", "./test/**/*.ts"],

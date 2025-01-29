@@ -1,6 +1,5 @@
 import type { ColorName } from "consola/utils";
 import Elysia from "elysia";
-import { ClientError, ServerError } from "#/libs/error";
 import { getColorFn as c, log } from "#/libs/logger";
 
 const STATUS_COLOR_MAP: { [k in number]?: ColorName } = {
@@ -29,12 +28,8 @@ function formatTime(time: number): string {
 
 export function useLoggerMiddleware() {
     return new Elysia({
-        name: "RequestLogger",
+        name: "Middleware.Logger",
     })
-        .error({
-            ClientError,
-            ServerError,
-        })
         .derive(
             {
                 as: "scoped",

@@ -83,28 +83,11 @@ const ERROR_STATUS_MAP: Record<HttpErrorStatusString, number> = {
     NETWORK_AUTHENTICATION_REQUIRED: 511,
 } as const;
 
-export class ClientError extends Error {
-    code = "CLIENT_ERROR";
-    status: number;
-    error: HttpErrorStatusString;
-
-    constructor(error: HttpErrorStatusString, message?: string) {
-        super(message ?? "CLIENT_ERROR");
-        this.error = error;
-        this.status = ERROR_STATUS_MAP[error];
-    }
-}
-
-export class ServerError extends Error {
-    code = "SERVER_ERROR";
-    status: number;
-    error: HttpErrorStatusString;
-
-    constructor(error: HttpErrorStatusString, message?: string) {
-        super(message ?? "SERVER_ERROR");
-        this.error = error;
-        this.status = ERROR_STATUS_MAP[error];
-    }
+// a function that takes in the number of the status code and returns the value name of the status code
+export function getStatusName(status: number): HttpErrorStatusString {
+    return Object.keys(ERROR_STATUS_MAP).find(
+        (key) => ERROR_STATUS_MAP[key as HttpErrorStatusString] === status
+    ) as HttpErrorStatusString;
 }
 
 export type ValidationResult = {
